@@ -60,6 +60,7 @@ export class Question extends Entity<QuestionProps> {
 
   set title(title: string) {
     this.props.title = title;
+    this.props.slug = Slug.createFromText(title);
     this.touch();
   }
 
@@ -68,12 +69,18 @@ export class Question extends Entity<QuestionProps> {
     this.touch();
   }
 
+  set bestAnswerId(bestAnswerId: UniqueEntityID | undefined) {
+    this.props.bestAnswerId = bestAnswerId;
+    this.touch();
+  }
+
   static create(
-    props: Optional<QuestionProps, "createdAt">,
+    props: Optional<QuestionProps, "createdAt" | "slug">,
     id?: UniqueEntityID,
   ) {
     const question = new Question({
       ...props,
+      slug: props.slug ?? Slug.createFromText(props.title),
       createdAt: new Date(),
     }, id);
     return question;
